@@ -16,15 +16,16 @@ load_dotenv()
 
 path_root = os.getcwd()
 dir_file_type = os.getenv("name_folder")
-dir_file_original_images = os.path.join(path_root,dir_file_type,'images_to_process')
+dir_file_original_images_spectral = os.getenv("direccion_imagenes_ingreso_satelite")
+dir_file_original_images_spatial = os.getenv("direccion_imagenes_ingreso_dron")
 dir_file_proccesed_images = os.path.join(path_root,dir_file_type,'processed_images')
 
 spatial_imagen_name = os.getenv("name_image_spatial")
 spectral_imagen_name = os.getenv("name_image_spectral")
 
 #Cargar las imágenes
-spatial_src = read_tif_image(dir_file_original_images,spatial_imagen_name)
-spectral_src = read_tif_image(dir_file_original_images,spectral_imagen_name)
+spatial_src = read_tif_image(dir_file_original_images_spatial,spatial_imagen_name)
+spectral_src = read_tif_image(dir_file_original_images_spectral,spectral_imagen_name)
 
 #Leo la imagen y reesampling, el metadata me guarda los datos originales de la espectral
 print("Leyendo imágenes y haciendo resampling")
@@ -55,6 +56,8 @@ iv1v2 = rgb_to_ihs(image_rgb)
 print("Ecualizar los histogramas")
 pan_i = match_histograms(pancromatica,iv1v2[:,:,0])
 #cv2.imwrite(os.path.join(dir_file_proccesed_images,"Imagen_ecualizada.png"),pan_i.astype('int64'))
+show_images([pancromatica,pan_i],dir_file_proccesed_images, 'gray')
+show_hist([pancromatica,pan_i],dir_file_proccesed_images, 'blue')
 
 #Preguntar qué método de fusión quiere ejecutar
 option = 0
@@ -92,20 +95,21 @@ with rasterio.open(os.path.join(dir_file_proccesed_images,f"{resultado_name}"),
             dst.write(new_spectral_image[:,:,ix], ix+1)
 
 #Cálculo de indices de calidad
+
 #Original
 ix_rgb_bands = [3,2,1]
 #Dimension espacial
-spatial_image_src = read_tif_image(dir_file_original_images,spatial_imagen_name)
+spatial_image_src = read_tif_image(dir_file_original_images_spatial,spatial_imagen_name)
 spatial_imagen = np.dstack([spatial_image_src.read(band) for band in ix_rgb_bands])
 #Dimension espectral
-spectral_image_src = read_tif_image(dir_file_original_images,spectral_imagen_name)
+spectral_image_src = read_tif_image(dir_file_original_images_spectral,spectral_imagen_name)
 spectral_imagen = np.dstack([spectral_image_src.read(band) for band in ix_rgb_bands])
 
 #Resultado
 resultado_image_src = read_tif_image(dir_file_proccesed_images,resultado_name)
 resultado_imagen = np.dstack([resultado_image_src.read(band) for band in ix_rgb_bands])
 
-#EVALUACIÓN
+#Evaluación
 indices_full_reference_spacial = test_full_references(spatial_imagen,resultado_imagen)
 indices_full_reference_spectral = test_full_references(np.transpose(inter_spectral,(1,2,0)),resultado_imagen)
 
@@ -121,7 +125,11 @@ with open(os.path.join(dir_file_proccesed_images,"indices_calidad_espectral_full
     for test in indices_full_reference_spectral:
         writer.writerow(test)
 
-indices_full_no_reference = test_no_references(np.transpose(inter_spectral,(1,2,0)),spatial_imagen,resultado_imagen)
+print(np.transpose(inter_spectral, (1, 2, 0)).shape)
+print(pancromatica.shape)
+print(resultado_imagen.shape)
+
+indices_full_no_reference = test_no_references(np.transpose(inter_spectral,(1,2,0)),pancromatica,resultado_imagen)
 
 print("Calculo de indices espectrales no full reference")
 with open(os.path.join(dir_file_proccesed_images,"indices_calidad_no_full_references.csv"), "w", newline="") as f:
