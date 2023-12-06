@@ -15,13 +15,12 @@ get_RGB_bands_satellite_ndarray_and_other_bands = lambda src: [src[ix,:,:] for i
 ndarray_rgb = lambda r,g,b: np.dstack((r, g, b)) # Merge r,g and b with numpy
 rgb_img = lambda red,green,blue : cv2.merge([red,green,blue]) # Merge r,g and b with openCv
 
-
 process_imag_to_another_model = lambda img, mask: np.dstack([
     sum((value*img[:,:,channel]) 
         for value,channel in zip(row,range(img.astype(float).shape[2])))
     for row in mask])
 
-def show_images(images: list, cmap:str = None):
+def show_images(images: list, path, cmap:str = None):
     fig, axs = pyplot.subplots(ncols=len(images), nrows=1, figsize=(15, 9), sharey=True)
     if cmap:
         for ix,axn in enumerate(axs):
@@ -31,13 +30,15 @@ def show_images(images: list, cmap:str = None):
             show(images[ix], ax=axn)
     for ix,axn in enumerate(axs):
         axn.set_title(f"imagen {ix}")
+    pyplot.savefig(os.path.join(path,'imagenes_ecualizadas.png'), dpi='figure', format=None, bbox_inches='tight')
 
-def show_hist(images: list, color:str = 'b'):
+def show_hist(images: list, path, color:str = 'b'):
     fig, axs = pyplot.subplots(ncols=len(images), nrows=1, figsize=(10, 9), sharey=True)
     for ix,axn in enumerate(axs):
         axn.hist(images[ix].flatten(), color=color, alpha=0.5, bins=20)
     for ix,axn in enumerate(axs):
         axn.set_title(f"imagen {ix}")
+    pyplot.savefig(os.path.join(path,'histogramas_imagenes_ecualizadas.png'), dpi='figure', format=None, bbox_inches='tight')
 
 def read_tif_image(path,image_name) -> rasterio.io.DatasetReader:
     return rasterio.open(os.path.join(path,image_name))
@@ -68,7 +69,7 @@ def resampling_spectral(src,height:int, width:int, interpolation_type:str):
     metadata = src.profile
     metadata['transform'] = new_transform
     metadata['width'] = width
-    metadata['height'] = height 
+    metadata['height'] = height
     return [src_inter, metadata]
 
 def merge_bands(imageRBG:np.ndarray,list_new_bands:list[np.ndarray]) -> np.ndarray :
