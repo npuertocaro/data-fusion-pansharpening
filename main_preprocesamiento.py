@@ -11,12 +11,8 @@ directorio_destino = os.getenv("ruta_folder_bandas_8BIT")
 
 ### PREPROCESAMIENTO IMÁGENES SATELITALES ###
 
-# # Transformación 8-bit Satelite 2022
-# transformacion_8bit_2022(directorio_originales, directorio_destino)
-# print("Transformación de imágenes a 8 bit completado")
-
 # # Transformación 8-bit Satelite
-# transformacion_8bit_2020(directorio_originales, directorio_destino)
+# transformacion_8bit(directorio_originales, directorio_destino)
 # print("Transformación de imágenes a 8 bit completado")
 
 # # Proyección de EPSG 4326 a EPSG 9377 Satelite
@@ -61,12 +57,12 @@ directorio_destino = os.getenv("ruta_folder_bandas_8BIT")
 # directorio_salida_imagen_avion = os.getenv("directorio_salida_imagen_avion")
 # desconcatenar_bandas_avion(directorio_imagen_avion, nombre_imagen_avion, directorio_salida_imagen_avion)
 
-#Transformación relativa de radiancia uav
-# directorio_dron = os.getenv("directorio_salida_imagen_uav")
-# directorio_satelite = os.getenv("ruta_del_directorio_recortadas")
-# directorio_destino = os.getenv("directorio_imagen_uav_reflec_correc")
-# shapefile_ruta = os.getenv("direccion_shape_correccion_puntos")
-# transformacion_radiancia(directorio_dron, directorio_satelite, directorio_destino, shapefile_ruta)
+# Transformación relativa de radiancia uav
+directorio_dron = os.getenv("directorio_salida_imagen_uav")
+directorio_satelite = os.getenv("ruta_del_directorio_recortadas")
+directorio_destino = os.getenv("directorio_imagen_uav_reflec_correc")
+shapefile_ruta = os.getenv("direccion_shape_correccion_puntos")
+transformacion_radiancia(directorio_dron, directorio_satelite, directorio_destino, shapefile_ruta)
 
 # # Unir bandas Satelite 2022
 # directorio_recortadas = os.getenv("ruta_del_directorio_recortadas")
@@ -91,28 +87,28 @@ directorio_destino = os.getenv("ruta_folder_bandas_8BIT")
 # #Resolucion de 10m falso color 832
 # crear_imagen_rgb(banda_4, banda_2, banda_1, direccion_salida_fc)
 
-# Unir bandas Satelite 2020
-directorio_recortadas = os.getenv("ruta_del_directorio_recortadas")
-banda_B = os.getenv("banda_B")
-banda_G = os.getenv("banda_G")
-banda_R = os.getenv("banda_R")
-banda_NIR = os.getenv("banda_NIR")
+# # Unir bandas Satelite 2020
+# directorio_recortadas = os.getenv("ruta_del_directorio_recortadas")
+# banda_B = os.getenv("banda_B")
+# banda_G = os.getenv("banda_G")
+# banda_R = os.getenv("banda_R")
+# banda_NIR = os.getenv("banda_NIR")
 
-banda_1 = os.path.join(directorio_recortadas, banda_B)
-banda_2 = os.path.join(directorio_recortadas, banda_G)
-banda_3 = os.path.join(directorio_recortadas, banda_R)
-banda_4 = os.path.join(directorio_recortadas, banda_NIR)
+# banda_1 = os.path.join(directorio_recortadas, banda_B)
+# banda_2 = os.path.join(directorio_recortadas, banda_G)
+# banda_3 = os.path.join(directorio_recortadas, banda_R)
+# banda_4 = os.path.join(directorio_recortadas, banda_NIR)
 
-direccion_salida_fusion = os.getenv("direccion_imagenes_ingreso_satelite_2")
-union_satelite_RGB = '20201025T152641_10_RGB432.tif'
-union_satelite_falsocolor = '20201025T152641_10_RGB832.tif'
-direccion_salida_rgb = os.path.join(direccion_salida_fusion, union_satelite_RGB)
-direccion_salida_fc = os.path.join(direccion_salida_fusion, union_satelite_falsocolor)
-#Resolucion de 10m RGB color 432
-crear_imagen_rgb(banda_3, banda_2, banda_1, direccion_salida_rgb)
+# direccion_salida_fusion = os.getenv("direccion_imagenes_ingreso_satelite_2")
+# union_satelite_RGB = '20201025T152641_10_RGB432.tif'
+# union_satelite_falsocolor = '20201025T152641_10_RGB832.tif'
+# direccion_salida_rgb = os.path.join(direccion_salida_fusion, union_satelite_RGB)
+# direccion_salida_fc = os.path.join(direccion_salida_fusion, union_satelite_falsocolor)
+# #Resolucion de 10m RGB color 432
+# crear_imagen_rgb(banda_3, banda_2, banda_1, direccion_salida_rgb)
 
-#Resolucion de 10m falso color 832
-crear_imagen_rgb(banda_4, banda_2, banda_1, direccion_salida_fc)
+# #Resolucion de 10m falso color 832
+# crear_imagen_rgb(banda_4, banda_2, banda_1, direccion_salida_fc)
 
 # # Unir bandas uav rgb
 # directorio_destino = os.getenv("directorio_imagen_uav_reflec_correc")

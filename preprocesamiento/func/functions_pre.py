@@ -9,7 +9,7 @@ from rasterio.enums import Resampling
 from rasterio.mask import mask
 import fiona
 
-def transformacion_8bit_2022(directorio_originales, directorio_destino):
+def transformacion_8bit(directorio_originales, directorio_destino):
     """ Aplica una transformación 8-bit a las imágenes en el directorio de origen y guarda las imágenes en el directorio de destino.
     Args:
         directorio_originales (str): Directorio que contiene las imágenes satelitales originales.
@@ -22,7 +22,7 @@ def transformacion_8bit_2022(directorio_originales, directorio_destino):
     for nombre_archivo in os.listdir(directorio_originales):
         if nombre_archivo.endswith(('.tif')):  # Filtra solo los archivos de imagen
             imagen_src = read_tif_image(directorio_originales, nombre_archivo)
-            metadata = imagen_src.profile
+            metadata = imagen_src.meta
             metadata.update(
                 dtype=rasterio.uint8,
                 count=1,
@@ -30,8 +30,11 @@ def transformacion_8bit_2022(directorio_originales, directorio_destino):
                 nodata=255,
                 )
             datos_imagen = imagen_src.read(1)
+            valor_max = np.max(datos_imagen, where=(datos_imagen < 65535), initial=0)
+            valor_min = datos_imagen.min()
+            print(valor_min, valor_max)
             # Aplica la transformación 8-bit ajustando los valores de píxeles al rango de 0 a 255
-            datos_imagen_transformados = np.interp(datos_imagen, (datos_imagen.min(), datos_imagen.max()), (0, 255))
+            datos_imagen_transformados = np.interp(datos_imagen, (valor_min, valor_max), (0, 255))
             # Guarda la imagen transformada en el directorio de destino
             ruta_imagen_destino = os.path.join(directorio_destino, nombre_archivo)
             # Crea una nueva imagen con Rasterio
@@ -39,32 +42,12 @@ def transformacion_8bit_2022(directorio_originales, directorio_destino):
                 dst.write(datos_imagen_transformados.astype(rasterio.uint8), 1)  # Escribe los datos en la banda 1
             print(f'Imagen {nombre_archivo} transformada y guardada en {ruta_imagen_destino}')
 
-def transformacion_8bit_2020(directorio_originales, directorio_destino):
-    # Asegúrate de que el directorio de destino exista
-    if not os.path.exists(directorio_destino):
-        os.makedirs(directorio_destino)
-    # Aplica la transformación 8-bit a las imágenes en el directorio original y guárdalas en el directorio de destino
-    for nombre_archivo in os.listdir(directorio_originales):
-        if nombre_archivo.endswith(('.tif')):  # Filtra solo los archivos de imagen
-            imagen_src = read_tif_image(directorio_originales, nombre_archivo)
-            metadata = imagen_src.meta
-            datos_imagen = imagen_src.read(1)
-            # Aplica la transformación 8-bit ajustando los valores de píxeles al rango de 0 a 255
-            datos_imagen_transformados = np.interp(datos_imagen, (datos_imagen.min(), datos_imagen.max()), (0, 255))
-            # Guarda la imagen transformada en el directorio de destino
-            ruta_imagen_destino = os.path.join(directorio_destino, nombre_archivo)
-            # Crea una nueva imagen con Rasterio
-            with rasterio.open(ruta_imagen_destino, 'w', **metadata) as dst:
-                dst.write(datos_imagen_transformados, 1)  # Escribe los datos en la banda 1
-            print(f'Imagen {nombre_archivo} transformada y guardada en {ruta_imagen_destino}')
-
-def reproject_images(directorio_originales, directorio_destino, dst_crs='EPSG:3116'):
+def reproject_images(directorio_originales, directorio_destino, dst_crs):
     # Asegúrate de que el directorio de destino exista
     if not os.path.exists(directorio_destino):
         os.makedirs(directorio_destino)
     # Lista de extensiones de archivo válidas
     extensiones_validas = ('.tif')
-
     for nombre_archivo in os.listdir(directorio_originales):
         if nombre_archivo.lower().endswith(extensiones_validas):  # Filtra solo las extensiones válidas
             ruta_completa = os.path.join(directorio_originales, nombre_archivo)
@@ -90,19 +73,16 @@ def reproject_images(directorio_originales, directorio_destino, dst_crs='EPSG:31
                             src_crs=src.crs,
                             dst_transform=transform,
                             dst_crs=dst_crs,
-                            resampling=Resampling.bilinear)
-                        
+                            resampling=Resampling.bilinear)            
             print(f'Imagen {nombre_archivo} reproyectada y guardada en {ruta_completa_destino}')
 
 def recortar_con_shapefile(directorio_imagenes, directorio_shapefile, directorio_salida):
     # Abre el shapefile y obtiene la geometría (en este caso, asumimos un solo polígono)
     with fiona.open(directorio_shapefile, "r") as shapefile:
         shapes = [feature["geometry"] for feature in shapefile]
-
     # Asegúrate de que el directorio de destino exista
     if not os.path.exists(directorio_salida):
         os.makedirs(directorio_salida)
-
     for nombre_archivo in os.listdir(directorio_imagenes):
         if nombre_archivo.endswith(('.tif')):
             ruta_completa = os.path.join(directorio_imagenes, nombre_archivo)
@@ -116,7 +96,6 @@ def recortar_con_shapefile(directorio_imagenes, directorio_shapefile, directorio
                                  "height": out_image.shape[1],
                                  "width": out_image.shape[2],
                                  "transform": out_transform})
-
                 # Guarda la imgs recortada en la carpeta de salida
                 nombre_salida = os.path.join(directorio_salida, f"recortada_{nombre_archivo}")
                 with rasterio.open(nombre_salida, "w", **out_meta) as dest:
