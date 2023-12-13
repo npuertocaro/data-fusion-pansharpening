@@ -177,10 +177,16 @@ def transformacion_radiancia(directorio_dron, directorio_satelite, directorio_de
             imagen_dron = os.path.join(directorio_dron, nombre_archivo_dron)
             with rasterio.open(imagen_dron) as banda_dron:
                 metadata = banda_dron.meta
+                metadata.update(
+                dtype=rasterio.uint8,
+                count=1,
+                compress='lzw',
+                nodata=255,
+                )
                 banda_dron = banda_dron.read(1)
             # Identifica la banda del satélite correspondiente
-            if 'green' in nombre_archivo_dron:
-                nombre_archivo_satelite = 'recortada_RT_T18NXL_20221224T152641_B03_reprojected.tif'
+            if 'blue' in nombre_archivo_dron:
+                nombre_archivo_satelite = 'recortada_RT_T18NXL_20221224T152641_B02_reprojected.tif'
             elif 'red' in nombre_archivo_dron:
                 nombre_archivo_satelite = 'recortada_RT_T18NXL_20221224T152641_B04_reprojected.tif'
             elif 'green' in nombre_archivo_dron:
