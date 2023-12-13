@@ -1,7 +1,6 @@
 import os
 import numpy as np
 import rasterio
-import geopandas as gpd
 from func.functions import read_tif_image
 from rasterio.warp import calculate_default_transform, reproject, Resampling
 from rasterio.merge import merge
@@ -191,9 +190,13 @@ def transformacion_radiancia(directorio_dron, directorio_satelite, directorio_de
                 continue
             ruta_archivo_satelite = os.path.join(directorio_satelite, nombre_archivo_satelite)
             # Lee la banda del satélite
-            banda_satelite = leer_banda(ruta_archivo_satelite)
+            with rasterio.open(ruta_archivo_satelite) as src:
+                banda_satelite = src.read(1)
+            valor_max_satelite = np.max(banda_satelite, where=(banda_satelite < 255), initial=0)
+            valor_min_satelite = banda_satelite.min()
+            print(valor_min_satelite, valor_max_satelite)
             # Interpola la banda del dron con la banda correspondiente del satélite
-            banda_interpolada = np.interp(banda_dron, (banda_dron.min(), banda_dron.max()), (banda_satelite.min(), banda_satelite.max()))
+            banda_interpolada = np.interp(banda_dron, (banda_dron.min(), banda_dron.max()), (valor_min_satelite, valor_max_satelite))
             # Guarda la banda interpolada en el directorio de destino
             ruta_banda_destino = os.path.join(directorio_destino, nombre_archivo_dron)
             # Guarda la banda como un nuevo archivo GeoTIFF
@@ -206,15 +209,7 @@ def transformacion_radiancia(directorio_dron, directorio_satelite, directorio_de
             valores_dron = extraer_valores(ruta_banda_destino, puntos) 
             print("Valores verdaderos (Imagen Satelital):", valores_satelital) 
             print("Valores relativamente ajustados (Imagen UAV):", valores_dron)
-
-def leer_banda(ruta_archivo):
-    with rasterio.open(ruta_archivo) as src:
-        return src.read(1)
-
-def guardar_banda(ruta_archivo, datos_banda):
-    with rasterio.open(ruta_archivo, 'w', driver='GTiff', height=datos_banda.shape[0], width=datos_banda.shape[1], count=1, dtype=datos_banda.dtype) as dst:
-        dst.write(datos_banda, 1)
-
+            
 def crear_imagen_rgb(ruta_b1, ruta_b2, ruta_b3, ruta_destino):
     # Abre cada banda por separado
     with rasterio.open(ruta_b1) as src1, rasterio.open(ruta_b2) as src2, rasterio.open(ruta_b3) as src3:
