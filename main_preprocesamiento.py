@@ -9,7 +9,8 @@ path_root = os.getcwd()
 directorio_originales = os.getenv("ruta_folder_bandas")
 directorio_destino = os.getenv("ruta_folder_bandas_8BIT")
 
-### PREPROCESAMIENTO IMÁGENES SATELITALES ###
+### PREPROCESA
+#MIENTO IMÁGENES SATELITALES ###
 
 # # Transformación 8-bit Satelite
 # transformacion_8bit(directorio_originales, directorio_destino)
@@ -51,11 +52,11 @@ directorio_destino = os.getenv("ruta_folder_bandas_8BIT")
 # directorio_salida_imagen_uav = os.getenv("directorio_salida_imagen_uav")
 # desconcatenar_bandas_uav(directorio_imagen_uav, nombre_imagen, directorio_salida_imagen_uav)
 
-# #Desconcatenación de bandas avion
-# directorio_imagen_avion = os.getenv("ruta_del_directorio_transformadas_avion_EPSG")
-# nombre_imagen_avion = os.getenv("nombre_imagen_avion")
-# directorio_salida_imagen_avion = os.getenv("directorio_salida_imagen_avion")
-# desconcatenar_bandas_avion(directorio_imagen_avion, nombre_imagen_avion, directorio_salida_imagen_avion)
+#Desconcatenación de bandas avion
+directorio_imagen_avion = os.getenv("ruta_del_directorio_transformadas_avion_EPSG")
+nombre_imagen_avion = os.getenv("nombre_imagen_avion")
+directorio_salida_imagen_avion = os.getenv("directorio_salida_imagen_avion")
+desconcatenar_bandas_avion(directorio_imagen_avion, nombre_imagen_avion, directorio_salida_imagen_avion)
 
 # Transformación relativa de radiancia uav
 directorio_dron = os.getenv("directorio_salida_imagen_uav")
