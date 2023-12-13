@@ -179,8 +179,8 @@ def transformacion_radiancia(directorio_dron, directorio_satelite, directorio_de
                 metadata = banda_dron.meta
                 banda_dron = banda_dron.read(1)
             # Identifica la banda del satélite correspondiente
-            if 'blue' in nombre_archivo_dron:
-                nombre_archivo_satelite = 'recortada_RT_T18NXL_20221224T152641_B02_reprojected.tif'
+            if 'green' in nombre_archivo_dron:
+                nombre_archivo_satelite = 'recortada_RT_T18NXL_20221224T152641_B03_reprojected.tif'
             elif 'red' in nombre_archivo_dron:
                 nombre_archivo_satelite = 'recortada_RT_T18NXL_20221224T152641_B04_reprojected.tif'
             elif 'green' in nombre_archivo_dron:
