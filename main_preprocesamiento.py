@@ -112,7 +112,7 @@ directorio_destino = os.getenv("ruta_folder_bandas_8BIT")
 # #Resolucion de 10m falso color 832
 # crear_imagen_rgb(banda_4, banda_2, banda_1, direccion_salida_fc)
 
-# # Unir bandas uav rgb
+# Unir bandas uav rgb
 directorio_destino = os.getenv("directorio_imagen_uav_reflec_correc")
 banda_B = os.getenv("banda_B_uav")
 banda_G = os.getenv("banda_G_uav")

@@ -7,6 +7,7 @@ from rasterio.merge import merge
 from rasterio.enums import Resampling
 from rasterio.mask import mask
 import fiona
+import cv2
 
 def transformacion_8bit(directorio_originales, directorio_destino):
     """ Aplica una transformación 8-bit a las imágenes en el directorio de origen y guarda las imágenes en el directorio de destino.
@@ -229,7 +230,7 @@ def crear_imagen_rgb(ruta_b1, ruta_b2, ruta_b3, ruta_destino):
             "count": 3
             })
     # Concatena las bandas a lo largo del tercer eje para formar una imagen RGB
-    imagen_unida = np.stack([banda_1, banda_2, banda_3])
+    imagen_unida = np.stack([banda_1, banda_2, banda_3], axis=-1)
     # Guarda la imagen RGB como un nuevo archivo GeoTIFF
     with rasterio.open(ruta_destino, 'w', **metabanda) as dest:
         # Escribe la imagen RGB en la primera banda del archivo raster
