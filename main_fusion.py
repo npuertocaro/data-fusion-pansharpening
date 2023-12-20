@@ -27,37 +27,38 @@ spectral_imagen_name = os.getenv("name_image_spectral")
 spatial_src = read_tif_image(dir_file_original_images_spatial,spatial_imagen_name)
 spectral_src = read_tif_image(dir_file_original_images_spectral,spectral_imagen_name)
 
-# #Leo la imagen y reesampling, el metadata me guarda los datos originales de la espectral
-# print("Leyendo imágenes y haciendo resampling")
-# inter_spectral, metadata = resampling_spectral(spectral_src,spatial_src.height,spatial_src.width,'bilinear') 
-# spectral_src.close()
+#Leo la imagen y reesampling, el metadata me guarda los datos originales de la espectral
+print("Leyendo imágenes y haciendo resampling")
+inter_spectral, metadata = resampling_spectral(spectral_src,spatial_src.height,spatial_src.width,'bilinear') 
+spectral_src.close()
 
-# # print(inter_spectral, metadata, spectral_src)
+print(inter_spectral, metadata, spectral_src)
 
-# #Cargar las bandas y se guardan como una lista de bandas separadas
-# print("Cargar las bandas y se guardan como una lista de bandas separadas")
-# bands = get_RGB_bands_satellite_ndarray_and_other_bands(inter_spectral)
-# [red,green,blue] = bands[0:3]
-# other_bands = bands[3:]
-# image_rgb = rgb_img(red,green,blue)
-# # plt.imshow(image_rgb)
+#Cargar las bandas y se guardan como una lista de bandas separadas
+print("Cargar las bandas y se guardan como una lista de bandas separadas")
+bands = get_RGB_bands_satellite_ndarray_and_other_bands(inter_spectral)
+[red,green,blue] = bands[0:3]
+other_bands = bands[3:]
+image_rgb = rgb_img(red,green,blue)
 
-# # Creacion de la falsa pancromatica
-# print("Creación de la falsa pancromática")
-# pancromatica = get_pancromatica(spatial_src)
-# spatial_src.close()
-# pancromatica = pancromatica.astype(np.float64)
+image_rgb.shape
 
-# #RGB TO IHS
-# print("RGB a IHS")
-# iv1v2 = rgb_to_ihs(image_rgb)
+# Creacion de la falsa pancromatica
+print("Creación de la falsa pancromática")
+pancromatica = get_pancromatica(spatial_src)
+spatial_src.close()
+pancromatica = pancromatica.astype(np.float64)
 
-# #Ecualizar los histogramas
-# print("Ecualizar los histogramas")
-# pan_i = match_histograms(pancromatica,iv1v2[:,:,0])
-# #cv2.imwrite(os.path.join(dir_file_proccesed_images,"Imagen_ecualizada.png"),pan_i.astype('int64'))
-# show_images([pancromatica,pan_i],dir_file_proccesed_images, 'gray')
-# show_hist([pancromatica,pan_i],dir_file_proccesed_images, 'blue')
+#RGB TO IHS
+print("RGB a IHS")
+iv1v2 = rgb_to_ihs(image_rgb)
+
+#Ecualizar los histogramas
+print("Ecualizar los histogramas")
+pan_i = match_histograms(pancromatica,iv1v2[:,:,0])
+#cv2.imwrite(os.path.join(dir_file_proccesed_images,"Imagen_ecualizada.png"),pan_i.astype('int64'))
+show_images([pancromatica,pan_i],dir_file_proccesed_images, 'gray')
+show_hist([pancromatica,pan_i],dir_file_proccesed_images, 'blue')
 
 # #Preguntar qué método de fusión quiere ejecutar
 # option = 0
