@@ -3,6 +3,7 @@ GEOBIA/*
 *.pyc
 *.DS_Store
 .env
+preprocesamiento/*
 main_preprocesamiento.py
 
 # Byte-compiled / optimized / DLL files
