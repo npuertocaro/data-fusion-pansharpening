@@ -40,7 +40,7 @@ def show_images(images: list, path, cmap:str = None):
     Returns:
     - None
     """
-    fig, axs = pyplot.subplots(ncols=len(images), nrows=1, figsize=(16, 9), sharey=True)
+    fig, axs = pyplot.subplots(ncols=len(images), nrows=1, figsize=(20, 10), sharey=True)
     if cmap:
         for ix,axn in enumerate(axs):
             show(images[ix], cmap=cmap, ax=axn)
