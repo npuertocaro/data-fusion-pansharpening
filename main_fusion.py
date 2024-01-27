@@ -63,7 +63,7 @@ iv1v2 = iv1v2.astype(np.float64)
 print("Igualación los histogramas")
 pan_i = match_histograms(pancromatica, iv1v2[:, :, 0])
 show_images([pancromatica, pan_i, iv1v2[:, :, 0]], dir_file_proccesed_images, 'gray')
-show_hist([pancromatica, pan_i, iv1v2[:, :, 0]], dir_file_proccesed_images, 'blue')
+show_hist([pancromatica, pan_i, iv1v2[:, :, 0]], dir_file_proccesed_images, 'gray')
 
 # ========== Selección del Método de Fusión ==========
 
