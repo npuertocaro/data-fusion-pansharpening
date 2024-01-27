@@ -67,6 +67,7 @@ show_hist([pancromatica, pan_i, iv1v2[:, :, 0]], dir_file_proccesed_images, 'gra
 
 # ========== Selección del Método de Fusión ==========
 
+nombre_resultado_imagen = os.getenv("name_imagen")
 option = 0
 while True:
     option = input("Escoja el método de fusión:\n 1. IHS\n 2. Atrous Wavelet\n")
@@ -84,12 +85,10 @@ if option == "1":
     print("Conversión de IHS a RGB")
     mask_matrix_to_rgb = [[1, 1/sqrt(6), 1/sqrt(6)], [1, 1/sqrt(6), -1/2], [1, -2/sqrt(6), 0]]
     merged_rgb_image = process_imag_to_another_model(pan_v1_v2, mask_matrix_to_rgb)
-
     print("Guardando datos fusionados")
     merged_rgb_image_8bits = merged_rgb_image.astype('uint8')
     new_spectral_image = merge_bands(merged_rgb_image_8bits, other_bands)
-    resultado_name = f"{'IHS'}_{spectral_imagen_name}_{spatial_imagen_name}"
-
+    resultado_name = f"{'IHS'}_{nombre_resultado_imagen}"
     with rasterio.open(os.path.join(dir_file_proccesed_images, f"{resultado_name}"),
                        'w',
                        **metadata,
@@ -101,9 +100,8 @@ elif option == "2":
     # ========== Fusión con Método Atrous Wavelet ==========
 
     fused_image_w = fusion_twa_multiband(image_rgb, pan_i, 5)
-
     print("Guardando datos fusionados")
-    resultado_name = f"{'IHS'}_{spectral_imagen_name}_{spatial_imagen_name}"
+    resultado_name = f"{'WAV'}_{nombre_resultado_imagen}"
     with rasterio.open(os.path.join(dir_file_proccesed_images, f"{resultado_name}"),
                        'w',
                        **metadata,
@@ -127,34 +125,34 @@ spectral_imagen = np.dstack([spectral_image_src.read(band) for band in ix_rgb_ba
 resultado_image_src = read_tif_image(dir_file_proccesed_images, resultado_name)
 resultado_imagen = np.dstack([resultado_image_src.read(band) for band in ix_rgb_bands])
 
-# ERGAS espacial y espectral
-ergas_x = spectral_ERGAS(spatial_imagen, resultado_imagen, 1/2, [1, 1, 1], 3)
-with open(os.path.join(dir_file_proccesed_images, f"{'ergas_espectral'}_{spectral_imagen_name}_{spatial_imagen_name}"), "w", newline="") as f:
-    writer = csv.writer(f)
-    for test in ergas_x:
-        writer.writerow(test)
+nombre_resultado = os.getenv("name_evaluacion")
 
-ergas_s = spatial_ERGAS(spatial_imagen, np.transpose(inter_spectral, (1, 2, 0)), 1/2, [1, 1, 1], 3)
-with open(os.path.join(dir_file_proccesed_images, f"{'ergas_espacial'}_{spectral_imagen_name}_{spatial_imagen_name}"), "w", newline="") as f:
+# ERGAS espacial y espectral
+ergas_x = spectral_ERGAS(np.transpose(inter_spectral, (1, 2, 0)), resultado_imagen, 1/2, [1, 1, 1], 3)
+with open(os.path.join(dir_file_proccesed_images, f"{'ergas_espectral'}_{nombre_resultado}"), "w", newline="") as f:
     writer = csv.writer(f)
-    for test in ergas_x:
-        writer.writerow(test)
+    writer.writerow([ergas_x])
+
+ergas_s = spatial_ERGAS(pancromatica, resultado_imagen, 1/2, [1, 1, 1], 3)
+with open(os.path.join(dir_file_proccesed_images, f"{'ergas_espacial'}_{nombre_resultado}"), "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow([ergas_s])
 
 # Evaluación con librería Sewar
 full_reference_espacial = test_full_references(spatial_imagen, resultado_imagen)
-with open(os.path.join(dir_file_proccesed_images, f"{'full_reference_espacial'}_{spectral_imagen_name}_{spatial_imagen_name}"), "w", newline="") as f:
+with open(os.path.join(dir_file_proccesed_images, f"{'full_reference_espacial'}_{nombre_resultado}"), "w", newline="") as f:
     writer = csv.writer(f)
     for test in full_reference_espacial:
         writer.writerow(test)
 
 full_reference_espectral = test_full_references(np.transpose(inter_spectral, (1, 2, 0)), resultado_imagen)
-with open(os.path.join(dir_file_proccesed_images, f"{'full_reference_espectral'}_{spectral_imagen_name}_{spatial_imagen_name}"), "w", newline="") as f:
+with open(os.path.join(dir_file_proccesed_images, f"{'full_reference_espectral'}__{nombre_resultado}"), "w", newline="") as f:
     writer = csv.writer(f)
     for test in full_reference_espectral:
         writer.writerow(test)
 
 full_no_reference = test_no_references(np.transpose(inter_spectral, (1, 2, 0)), pancromatica, resultado_imagen)
-with open(os.path.join(dir_file_proccesed_images, f"{'full_no_reference'}_{spectral_imagen_name}_{spatial_imagen_name}"), "w", newline="") as f:
+with open(os.path.join(dir_file_proccesed_images, f"{'full_no_reference'}__{nombre_resultado}"), "w", newline="") as f:
     writer = csv.writer(f)
     for test in full_no_reference:
         writer.writerow(test)
