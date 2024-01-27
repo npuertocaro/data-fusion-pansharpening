@@ -40,7 +40,7 @@ def show_images(images: list, path, cmap:str = None):
     Returns:
     - None
     """
-    fig, axs = pyplot.subplots(ncols=len(images), nrows=1, figsize=(15, 9), sharey=True)
+    fig, axs = pyplot.subplots(ncols=len(images), nrows=1, figsize=(16, 9), sharey=True)
     if cmap:
         for ix,axn in enumerate(axs):
             show(images[ix], cmap=cmap, ax=axn)
@@ -48,8 +48,8 @@ def show_images(images: list, path, cmap:str = None):
         for ix,axn in enumerate(axs):
             show(images[ix], ax=axn)
     for ix,axn in enumerate(axs):
-        axn.set_title(f"imagen {ix}")
-    pyplot.savefig(os.path.join(path,'imagenes_ecualizadas.png'), dpi='figure', format=None, bbox_inches='tight')
+        axn.set_title(f"Imagen {ix}")
+    pyplot.savefig(os.path.join(path,'Figura de imágenes - Pan - Igualacion - I.png'), dpi='figure', format=None, bbox_inches='tight')
 
 def show_hist(images: list, path, color:str = 'b'):
     """
@@ -63,12 +63,12 @@ def show_hist(images: list, path, color:str = 'b'):
     Returns:
     - None
     """
-    fig, axs = pyplot.subplots(ncols=len(images), nrows=1, figsize=(10, 9), sharey=True)
+    fig, axs = pyplot.subplots(ncols=len(images), nrows=1, figsize=(16,9), sharey=True)
     for ix,axn in enumerate(axs):
         axn.hist(images[ix].flatten(), color=color, alpha=0.5, bins=20)
     for ix,axn in enumerate(axs):
-        axn.set_title(f"imagen {ix}")
-    pyplot.savefig(os.path.join(path,'histogramas_imagenes_ecualizadas.png'), dpi='figure', format=None, bbox_inches='tight')
+        axn.set_title(f"Histograma {ix}")
+    pyplot.savefig(os.path.join(path,'Histograma Pan - Igualacion - I.png'), dpi='figure', format=None, bbox_inches='tight')
 
 def read_tif_image(path,image_name) -> rasterio.io.DatasetReader:
     """
