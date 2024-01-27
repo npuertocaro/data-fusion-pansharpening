@@ -44,6 +44,17 @@ def transformacion_8bit(directorio_originales, directorio_destino):
             print(f'Imagen {nombre_archivo} transformada y guardada en {ruta_imagen_destino}')
 
 def reproject_images(directorio_originales, directorio_destino, dst_crs):
+    """
+    Reproyecta imágenes a un nuevo sistema de referencia de coordenadas.
+
+    Parameters:
+    - directorio_originales (str): Ruta al directorio que contiene las imágenes originales.
+    - directorio_destino (str): Ruta al directorio donde se guardarán las imágenes reproyectadas.
+    - dst_crs (str): Sistema de referencia de coordenadas de destino (por ejemplo, 'EPSG:4326').
+
+    Returns:
+    - None
+    """
     # Asegúrate de que el directorio de destino exista
     if not os.path.exists(directorio_destino):
         os.makedirs(directorio_destino)
@@ -78,6 +89,17 @@ def reproject_images(directorio_originales, directorio_destino, dst_crs):
             print(f'Imagen {nombre_archivo} reproyectada y guardada en {ruta_completa_destino}')
 
 def recortar_con_shapefile(directorio_imagenes, directorio_shapefile, directorio_salida):
+    """
+    Recorta imágenes utilizando un archivo shapefile que define la geometría de recorte.
+
+    Parameters:
+    - directorio_imagenes (str): Ruta al directorio que contiene las imágenes a recortar.
+    - directorio_shapefile (str): Ruta al archivo shapefile que define la geometría de recorte.
+    - directorio_salida (str): Ruta al directorio donde se guardarán las imágenes recortadas.
+
+    Returns:
+    - None
+    """
     # Abre el shapefile y obtiene la geometría (en este caso, asumimos un solo polígono)
     with fiona.open(directorio_shapefile, "r") as shapefile:
         shapes = [feature["geometry"] for feature in shapefile]
@@ -104,6 +126,17 @@ def recortar_con_shapefile(directorio_imagenes, directorio_shapefile, directorio
             print(f'Imagen {nombre_archivo} recortada al área y guardada en {directorio_salida}')
 
 def desconcatenar_bandas_uav(directorio_imagenes, nombre_archivo, directorio_salida):
+    """
+    Desconcatena y guarda las bandas de una imagen UAV en archivos GeoTIFF individuales.
+
+    Parameters:
+    - directorio_imagenes (str): Ruta al directorio que contiene la imagen UAV.
+    - nombre_archivo (str): Nombre del archivo de imagen UAV.
+    - directorio_salida (str): Ruta al directorio donde se guardarán las bandas desconcatenadas.
+
+    Returns:
+    - None
+    """
     # Abre la imagen raster
     imagen_espacial = os.path.join(directorio_imagenes, nombre_archivo)
     with rasterio.open(imagen_espacial) as src:
@@ -129,6 +162,17 @@ def desconcatenar_bandas_uav(directorio_imagenes, nombre_archivo, directorio_sal
             dest.write(banda,1)
 
 def desconcatenar_bandas_avion(directorio_imagenes, nombre_archivo, directorio_salida):
+    """
+    Desconcatena y guarda las bandas de una imagen de avión en archivos GeoTIFF individuales.
+
+    Parameters:
+    - directorio_imagenes (str): Ruta al directorio que contiene la imagen de avión.
+    - nombre_archivo (str): Nombre del archivo de imagen de avión.
+    - directorio_salida (str): Ruta al directorio donde se guardarán las bandas desconcatenadas.
+
+    Returns:
+    - None
+    """
     # Abre la imagen raster
     imagen_espacial = os.path.join(directorio_imagenes, nombre_archivo)
     with rasterio.open(imagen_espacial) as src:
@@ -155,9 +199,16 @@ def desconcatenar_bandas_avion(directorio_imagenes, nombre_archivo, directorio_s
             dest.write(banda,1)
 
 def extraer_valores(imagen, puntos):
-    # # Cargar puntos desde shapefile
-    # with fiona.open(direccion_shapefile, 'r') as shp:
-    #     puntos = list(shp)
+    """
+    Extrae los valores de píxeles de una imagen para una lista de puntos.
+
+    Parameters:
+    - imagen (str): Ruta al archivo de imagen.
+    - puntos (list): Lista de puntos en formato GeoJSON.
+
+    Returns:
+    - List con los valores de píxeles correspondientes a cada punto.
+    """
     values = []
     with rasterio.open(imagen) as src:
         for punto in puntos:
@@ -168,6 +219,18 @@ def extraer_valores(imagen, puntos):
     return values
 
 def transformacion_radiancia(directorio_dron, directorio_satelite, directorio_destino,direccion_shapefile):
+    """
+    Realiza la transformación de radiancia y la interpolación de imágenes de dron utilizando imágenes satelitales.
+
+    Parameters:
+    - directorio_dron (str): Ruta al directorio que contiene las imágenes de dron.
+    - directorio_satelite (str): Ruta al directorio que contiene las imágenes satelitales.
+    - directorio_destino (str): Ruta al directorio donde se guardarán las imágenes de dron transformadas.
+    - direccion_shapefile (str): Ruta al archivo shapefile con la información de los puntos.
+
+    Returns:
+    - None
+    """
         # Cargar puntos desde shapefile
     with fiona.open(direccion_shapefile, 'r') as shp:
         puntos = list(shp)
@@ -214,17 +277,48 @@ def transformacion_radiancia(directorio_dron, directorio_satelite, directorio_de
             valores_satelital = extraer_valores(ruta_archivo_satelite, puntos) 
             valores_dron = extraer_valores(ruta_banda_destino, puntos) 
             print("Valores verdaderos (Imagen Satelital):", valores_satelital) 
-            print("Valores relativamente ajustados (Imagen UAV):", valores_dron)
+            print("Valores relativamente ajustados (Imagen UAS):", valores_dron)
 
 def leer_banda(ruta_archivo):
+    """
+    Lee una banda de un archivo raster.
+
+    Parameters:
+    - ruta_archivo (str): Ruta al archivo raster.
+
+    Returns:
+    - Datos de la banda leída.
+    """
     with rasterio.open(ruta_archivo) as src:
         return src.read(1)
 
 def guardar_banda(ruta_archivo, datos_banda):
+    """
+    Guarda una banda en un nuevo archivo raster.
+
+    Parameters:
+    - ruta_archivo (str): Ruta al nuevo archivo raster.
+    - datos_banda: Datos de la banda a guardar.
+
+    Returns:
+    - None
+    """
     with rasterio.open(ruta_archivo, 'w', driver='GTiff', height=datos_banda.shape[0], width=datos_banda.shape[1], count=1, dtype=datos_banda.dtype) as dst:
         dst.write(datos_banda, 1)
 
 def crear_imagen_rgb(ruta_b1, ruta_b2, ruta_b3, ruta_destino):
+    """
+    Crea una imagen RGB a partir de tres bandas raster.
+
+    Parameters:
+    - ruta_b1 (str): Ruta a la primera banda.
+    - ruta_b2 (str): Ruta a la segunda banda.
+    - ruta_b3 (str): Ruta a la tercera banda.
+    - ruta_destino (str): Ruta al nuevo archivo raster RGB.
+
+    Returns:
+    - None
+    """
     # Abre cada banda por separado
     with rasterio.open(ruta_b1) as src1, rasterio.open(ruta_b2) as src2, rasterio.open(ruta_b3) as src3:
         # Lee todas las bandas
