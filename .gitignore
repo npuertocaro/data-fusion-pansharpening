@@ -3,7 +3,6 @@ GEOBIA/*
 *.pyc
 *.DS_Store
 .env
-main_fusion.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -11,6 +10,7 @@ __pycache__/
 *$py.class
 cap04_resultados.py
 recorte.py
+main_fusion.py
 
 # C extensions
 *.so
