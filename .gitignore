@@ -12,6 +12,7 @@ cap04_resultados.py
 recorte.py
 main_fusion.py
 
+
 # C extensions
 *.so
 
