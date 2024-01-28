@@ -22,8 +22,8 @@ load_dotenv()
 
 path_root = os.getcwd()
 dir_file_type = os.getenv("name_folder")
-dir_file_original_images_spectral = os.getenv("direccion_imagenes_ingreso_satelite_2")
-dir_file_original_images_spatial = os.getenv("direccion_imagenes_ingreso_avion")
+dir_file_original_images_spectral = os.getenv("direccion_imagenes_ingreso_satelite")
+dir_file_original_images_spatial = os.getenv("direccion_imagenes_ingreso_dron")
 dir_file_proccesed_images = os.path.join(path_root, dir_file_type, 'processed_images')
 
 spatial_imagen_name = os.getenv("name_image_spatial")
