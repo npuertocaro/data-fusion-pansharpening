@@ -14,7 +14,6 @@ def test_full_references(original_imagen,proccesed_imagen):
     Returns:
         list: Lista de tuplas que contienen el nombre del índice y su valor.
     """
-    print('Calculando índices de calidad full references. Por favor espera...')
     return [("UQI", uqi(original_imagen, proccesed_imagen)),
             ("ERGAS", ergas(original_imagen, proccesed_imagen)),
             ("SAM: ", sam(original_imagen, proccesed_imagen))]
@@ -31,7 +30,6 @@ def test_no_references(spectral_imagen,pancromatica,proccesed_imagen):
     Returns:
         list: Lista de tuplas que contienen el nombre del índice y su valor.
     """
-    print('Calculando índices de calidad no references. Por favor espera...')
     return [("D_Lambda", d_lambda(spectral_imagen, proccesed_imagen)),
             ("D_S", d_s(pancromatica, np.transpose(spectral_imagen,(1,0,2)), proccesed_imagen,q=1,r=1,ws=1))]
 

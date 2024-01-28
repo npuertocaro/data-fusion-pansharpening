@@ -22,8 +22,8 @@ load_dotenv()
 
 path_root = os.getcwd()
 dir_file_type = os.getenv("name_folder")
-dir_file_original_images_spectral = os.getenv("direccion_imagenes_ingreso_satelite")
-dir_file_original_images_spatial = os.getenv("direccion_imagenes_ingreso_dron")
+dir_file_original_images_spectral = os.getenv("direccion_imagenes_ingreso_satelite_2")
+dir_file_original_images_spatial = os.getenv("direccion_imagenes_ingreso_avion")
 dir_file_proccesed_images = os.path.join(path_root, dir_file_type, 'processed_images')
 
 spatial_imagen_name = os.getenv("name_image_spatial")
@@ -49,18 +49,14 @@ image_rgb = ndarray_rgb(red, green, blue)
 
 # ========== Creación de la Falsa Pancromática ==========
 
-print("Creación de la falsa pancromática")
 pancromatica = get_pancromatica(spatial_src)
 spatial_src.close()
 pancromatica = pancromatica.astype(np.float64)
 
 # ========== Conversión RGB a IHS e Igualación de Histogramas ==========
 
-print("RGB a IHS")
 iv1v2 = rgb_to_ihs(image_rgb)
 iv1v2 = iv1v2.astype(np.float64)
-
-print("Igualación los histogramas")
 pan_i = match_histograms(pancromatica, iv1v2[:, :, 0])
 show_images([pancromatica, pan_i, iv1v2[:, :, 0]], dir_file_proccesed_images, 'gray')
 show_hist([pancromatica, pan_i, iv1v2[:, :, 0]], dir_file_proccesed_images, 'gray')
