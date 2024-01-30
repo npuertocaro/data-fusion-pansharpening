@@ -132,8 +132,6 @@ celerybeat.pid
 # Environments
 .env
 .venv
-.rsgislib_env
-rsgislib_env/
 env/
 venv/
 ENV/
