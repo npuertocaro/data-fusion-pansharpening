@@ -1,7 +1,6 @@
 import os
 import numpy as np
 import rasterio
-import geopandas as gpd
 from func.functions import read_tif_image
 from rasterio.warp import calculate_default_transform, reproject, Resampling
 from rasterio.merge import merge
