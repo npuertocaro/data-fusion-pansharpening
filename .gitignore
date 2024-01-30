@@ -1,5 +1,5 @@
 data/*
-GEOBIA/*
+land_classification/*
 *.pyc
 *.DS_Store
 .env
@@ -11,7 +11,7 @@ __pycache__/
 cap04_resultados.py
 recorte.py
 main_fusion.py
-
+main_classification.py
 
 # C extensions
 *.so
@@ -132,6 +132,8 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.rsgislib_env
+rsgislib_env/
 env/
 venv/
 ENV/
