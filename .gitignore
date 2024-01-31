@@ -1,5 +1,4 @@
 data/*
-land_classification/*
 *.pyc
 *.DS_Store
 .env
