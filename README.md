@@ -1,7 +1,7 @@
 # Fusión de Datos Pan-Sharpening
 
 ## Descripción del Proyecto
-Este repositorio contiene el modelo computacional desarrollado como parte de una investigación enfocada en el desafío de equilibrar la resolución espacial y espectral en los sensores remotos. La fusión de datos de múltiples sensores, conocida como pan-sharpening, emerge como una solución clave para superar estas limitaciones. La investigación presenta un enfoque integral para evaluar algoritmos de pan-sharpening, destacando su impacto en la clasificación de la cobertura del suelo.
+Este repositorio contiene el modelo computacional desarrollado como parte de una investigación enfocada en el desafío de fusionar datos ópticos, específicamente la resolución espacial y espectral en los sensores remotos obtenidos de diferentes plataformas y sensores. La fusión de datos de múltiples sensores, conocida como pan-sharpening, emerge como una solución clave para superar estas limitaciones. La investigación presenta un enfoque integral para evaluar algoritmos de pan-sharpening, destacando su impacto en la clasificación de la cobertura del suelo.
 
 La autora implementa y examina dos enfoques específicos de fusión de datos: Sustitución de Componentes (CS) y Análisis Multi-Resolución (MRA), aplicándolos en la clasificación de imágenes aéreas y satelitales de una zona rural en Cundinamarca. La calidad de las imágenes fusionadas se evaluó utilizando índices basados tanto en referencias como sin referencias, para medir la síntesis y la consistencia espectral y espacial, demostrando una mejor calidad en las imágenes fusionadas mediante el enfoque MRA.
 
